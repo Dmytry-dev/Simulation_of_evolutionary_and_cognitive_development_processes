@@ -1,6 +1,12 @@
+#Dmytry-dev
+#Display part
+#27.02.2026
+#V 0.1
+
+
 import pygame
 import sys
-
+import main
 
 def display_open():
     pygame.init()
@@ -28,8 +34,9 @@ def display_open():
     camera_y = 0
     zoom = 1.0
 
-
     running = True
+    objects = []
+
     while running:
         
         # Events
@@ -41,6 +48,17 @@ def display_open():
             if event.type == pygame.MOUSEWHEEL:
                 zoom *= 1.1 if event.y > 0 else 0.9
                 zoom = max(0.1, min(zoom, 5))
+            # Click
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                if field_rect.collidepoint(mouse_x, mouse_y):
+                    world_x = (mouse_x - field_rect.x) / zoom + camera_x
+                    world_y = (mouse_y - field_rect.y) / zoom + camera_y
+                    #-------------------------------------------------
+                    objects.append(main.make_cell(world_x, world_y))
+                    #-------------------------------------------------
+
+                    
 
         # Camera move
         keys = pygame.key.get_pressed()
@@ -84,6 +102,9 @@ def display_open():
             max(2, int(20*zoom))
         )
         #---------------------------------------
+
+        render_object(screen, objects, zoom, field_rect, camera_x, camera_y)
+
         screen.set_clip(None)
         
         # Frame Drawing
@@ -92,6 +113,22 @@ def display_open():
 
     pygame.quit()
     sys.exit()
+
+
+def render_object(screen, objects, zoom, field_rect, camera_x, camera_y):
+    for object in objects:
+        if object.type == "Cell":
+            screen_x = field_rect.x + (object.X - camera_x) * zoom
+            screen_y = field_rect.y + (object.Y - camera_y) * zoom
+
+            pygame.draw.circle(
+                screen,
+                object.col,
+                (int(screen_x), int(screen_y)),
+                max(2, int(20*zoom))
+            )
+
+
 
     
     

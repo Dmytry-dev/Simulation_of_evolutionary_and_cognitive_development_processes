@@ -1,3 +1,8 @@
+#Dmytry-dev
+#Gen structure
+#27.02.2026
+#V 0.1
+
 class Morphogenes:
     def __init__(self, Name, Substance, Condition, Level, Action_name):
         self.M_name = Name

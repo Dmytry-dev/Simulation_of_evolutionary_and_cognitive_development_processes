@@ -46,15 +46,12 @@ def main():
         screen.fill((255, 255, 255)) 
         screen.set_clip(None)
 
+        #Rendering objects
+        render.center_and_borders(screen, world_field, camera_obj)
+
         pygame.display.flip()
 
 
     
-
-
-
-
-
-
 if __name__ == "__main__":
     main()

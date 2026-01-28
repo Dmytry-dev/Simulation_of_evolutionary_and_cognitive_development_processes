@@ -21,8 +21,8 @@ class Camera:
         self.x = max(0, min(self.x, self.world_width - view_width))
         self.y = max(0, min(self.y, self.world_height - view_height))
 
-    def world_to_screen(self, wx, wy, field_rect):
-        sx = field_rect.x + (wx - self.x)
-        sy = field_rect.y + (wy - self.y)
+    def world_to_screen(self, wx, wy, world_field):
+        sx = world_field.x + (wx - self.x)
+        sy = world_field.y + (wy - self.y)
         return int(sx), int(sy)
 

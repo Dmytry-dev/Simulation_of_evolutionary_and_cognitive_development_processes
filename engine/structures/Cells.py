@@ -1,7 +1,5 @@
 #Dmytry dev
-#Cell structure
 #27.01.2026
-#V 0.1
 
 import math
 import pygame

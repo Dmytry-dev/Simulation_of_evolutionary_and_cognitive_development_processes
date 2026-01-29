@@ -3,7 +3,7 @@
 
 import pygame
 import sys
-from display import camera, input, render, window
+from display import camera, input, render, window, ui
 
 
 def main():
@@ -15,6 +15,7 @@ def main():
     speed = 500
 
     screen, world_field, ui_rect = window.create_window(width, height, panel_width)
+
     camera_obj = camera.Camera(world_width, world_height)
     camera_obj.x = world_width // 2 - world_field.width // 2
     camera_obj.y = world_height // 2 - world_field.height // 2

@@ -1,9 +1,9 @@
 #Dmytry-dev
-#28.01.2025
+#30.01.2025
 
 import pygame
 import sys
-from display import camera, input, render, window, ui
+from display import camera, input, render, window
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
     world_height = 10000
     speed = 500
 
-    screen, world_field, ui_rect = window.create_window(width, height, panel_width)
+    screen, world_field, ui_field, buttons = window.create_window(width, height, panel_width)
 
     camera_obj = camera.Camera(world_width, world_height)
     camera_obj.x = world_width // 2 - world_field.width // 2
@@ -25,22 +25,28 @@ def main():
     running = True
     while(running):
         dt = clock.tick(60)
-        input_state = input.world_inputs(world_field)
+        events = pygame.event.get()
+
+        world_input = input.world_inputs(events, world_field)
+        ui_inputs = input.ui_inputs(events, ui_field, buttons)
+
+
         move_speed = speed * dt / 1000
 
-        #Reaction to actions
-        if input_state["quit"]:
+        #Reaction to key actions
+        if world_input["quit"]:
             running = False
-        if "CAMERA_UP" in input_state["actions"]:
+        if "CAMERA_UP" in world_input["actions"]:
             camera_obj.move(0, -move_speed)
-        if "CAMERA_DOWN" in input_state["actions"]:
+        if "CAMERA_DOWN" in world_input["actions"]:
             camera_obj.move(0, move_speed)
-        if "CAMERA_LEFT" in input_state["actions"]:
+        if "CAMERA_LEFT" in world_input["actions"]:
             camera_obj.move(-move_speed, 0)
-        if "CAMERA_RIGHT" in input_state["actions"]:
+        if "CAMERA_RIGHT" in world_input["actions"]:
             camera_obj.move(move_speed, 0)
 
         camera_obj.clamp(world_field.width, world_field.height)
+
 
         #Clearing the world field before a new frame
         screen.set_clip(world_field)

@@ -1,15 +1,15 @@
 #Dmytry-dev
-#28.01.2026
+#30.01.2026
 
 import pygame
 
-def world_inputs(field_rect):
+def world_inputs(events, world_field):
     actions = set()
     quit_requested = False
     mouse_pos = pygame.mouse.get_pos()
 
     #Quit
-    for event in pygame.event.get():
+    for event in events:
         if event.type == pygame.QUIT:
             quit_requested = True
 
@@ -25,4 +25,19 @@ def world_inputs(field_rect):
     if keys[pygame.K_d]:
         actions.add("CAMERA_RIGHT")
 
+
+
+    
+
     return {"quit": quit_requested, "actions": actions, "mouse_pos": mouse_pos}
+
+def ui_inputs(events, ui_field, buttons):
+    actions = set()
+    mouse_pos = pygame.mouse.get_pos()
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            for button in buttons:
+                actions.add(button.handle_event(event, ui_field))
+    return(actions)
+
+

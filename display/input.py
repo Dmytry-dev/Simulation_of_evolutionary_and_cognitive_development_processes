@@ -32,12 +32,12 @@ def world_inputs(events, world_field):
     return {"quit": quit_requested, "actions": actions, "mouse_pos": mouse_pos}
 
 def ui_inputs(events, ui_field, buttons):
-    actions = set()
+    ui_inputs = set()
     mouse_pos = pygame.mouse.get_pos()
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             for button in buttons:
-                actions.add(button.handle_event(event, ui_field))
-    return(actions)
+                ui_inputs.add(button.handle_event(event, ui_field))
+    return(ui_inputs)
 
 

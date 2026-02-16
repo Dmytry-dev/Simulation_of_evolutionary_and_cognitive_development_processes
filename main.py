@@ -5,6 +5,9 @@ import pygame
 import sys
 from enum import Enum
 from display import camera, input, render, window
+from engine.saves import save_load
+from engine.structures import Cells, Gen
+from engine.world import world 
 
 class State(Enum):
     VIEW = "VIEW"
@@ -37,8 +40,6 @@ def main():
 
         world_input = input.world_inputs(events, world_field)
         ui_inputs = input.ui_inputs(events, focus_field, buttons)
-        print(ui_inputs)
-
 
         move_speed = speed * dt / 1000
 
@@ -66,12 +67,14 @@ def main():
             focus_field = ui_field
             screen_state = State.VIEW
 
+        ## Editor menu interactions
+
 
 
         camera_obj.clamp(world_field.width, world_field.height)
 
         #Clearing the world field before a new frame
-        if screen_state == "VIEW":
+        if screen_state == State.VIEW:
             screen.set_clip(world_field)
             screen.fill((255, 255, 255)) 
             screen.set_clip(None)

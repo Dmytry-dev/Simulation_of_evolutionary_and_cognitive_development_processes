@@ -46,6 +46,7 @@ def simulation_window(screen, width, height, panel_width):
     spawn_butt = Button(panel_width, 0, 0, "Spawn", ui_field, "SPAWN")
     select_butt = Button(panel_width, 0, 1, "Select", ui_field, "SELECT")
     make_butt = Button(panel_width, 0, 2, "Make", ui_field, "MAKE")
+    
 
     buttons = [spawn_butt, select_butt, make_butt]
 
@@ -70,10 +71,11 @@ def open_editor(screen, width, height):
     visual_field = pygame.Rect(width/2,0,width/2,height)
 
     #Buttons
-    back_butt = Button(width/8, 0, 0, "Back",editor_field, "BACK")
-    morph_butt = Button(width/8, 3, 0, "Morphogen", editor_field, "test")
-    action_butt = Button(width/8, 6, 0, "Action", editor_field, "test")
-    timer_butt = Button(width/8, 9, 0, "Timer", editor_field, "test")
+    back_butt = Button(width/8, 0, 0, "Back", editor_field, "BACK")
+    morph_butt = Button(width/8, 3, 0, "Morphogen", editor_field, "ADD_MORPH")
+    action_butt = Button(width/8, 6, 0, "Action", editor_field, "ADD_ACT")
+    timer_butt = Button(width/8, 9, 0, "Timer", editor_field, "ADD_TIME")
+    cell_butt = Button(width/4, 0, 1, "Cell editor", editor_field, "OPEN_CELL_EDITOR")
 
     buttons = [back_butt,morph_butt,action_butt,timer_butt]
 
@@ -89,6 +91,7 @@ def open_editor(screen, width, height):
     morph_butt.draw(screen)
     action_butt.draw(screen)
     timer_butt.draw(screen)
+    cell_butt.draw(screen)
 
     screen.set_clip(None)
 

@@ -62,5 +62,6 @@ def center_and_borders(screen, world_field, camera):
 
     screen.set_clip(None)
 
-def render_objects(object):
-    pass
+def render_objects(objects, field):
+    for object in objects:
+        pass

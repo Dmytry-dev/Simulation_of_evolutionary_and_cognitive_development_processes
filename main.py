@@ -8,10 +8,7 @@ from display import camera, input, render, window
 from engine.saves import save_load
 from engine.structures import Cells, Gen
 from engine.world import world 
-
-class State(Enum):
-    VIEW = "VIEW"
-    EDITOR = "EDITOR"
+from engine.genetic_editor import genetic_editor
 
 
 def main():
@@ -25,7 +22,6 @@ def main():
     screen = window.create_window(width, height, panel_width)
     world_field, ui_field, buttons = window.simulation_window(screen, width, height, panel_width)
     focus_field = ui_field
-    screen_state = State.VIEW
 
     camera_obj = camera.Camera(world_width, world_height)
     camera_obj.x = world_width // 2 - world_field.width // 2
@@ -58,29 +54,18 @@ def main():
 
         #Reactions to UI actions
         if "MAKE" in ui_inputs:
-            editor_field, visual_field, buttons = window.open_editor(screen, width, height)
-            focus_field = editor_field
-            screen_state = State.EDITOR
-
-        if "BACK" in ui_inputs:
-            world_field, ui_field, buttons = window.simulation_window(screen, width, height, panel_width)
-            focus_field = ui_field
-            screen_state = State.VIEW
-
-        ## Editor menu interactions
-
+            genetic_editor.open_editor()
 
 
         camera_obj.clamp(world_field.width, world_field.height)
 
         #Clearing the world field before a new frame
-        if screen_state == State.VIEW:
-            screen.set_clip(world_field)
-            screen.fill((255, 255, 255)) 
-            screen.set_clip(None)
+        screen.set_clip(world_field)
+        screen.fill((255, 255, 255)) 
+        screen.set_clip(None)
 
-            #Rendering objects
-            render.center_and_borders(screen, world_field, camera_obj)
+        #Rendering objects
+        render.center_and_borders(screen, world_field, camera_obj)
 
         pygame.display.flip()
 

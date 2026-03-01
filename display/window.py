@@ -3,6 +3,7 @@
 
 import pygame
 import sys
+##import pygame_gui
 
 class Button:
     def __init__(self, width, x, y, text, field, callback):
@@ -64,46 +65,3 @@ def simulation_window(screen, width, height, panel_width):
     screen.set_clip(None)
 
     return world_field, ui_field, buttons
-
-def open_editor(screen, width, height):
-    #Open Editor Fields
-    editor_field = pygame.Rect(0,0,width/2,height)
-    visual_field = pygame.Rect(width/2,0,width/2,height)
-
-    #Buttons
-    back_butt = Button(width/8, 0, 0, "Back", editor_field, "BACK")
-    morph_butt = Button(width/8, 3, 0, "Morphogen", editor_field, "ADD_MORPH")
-    action_butt = Button(width/8, 6, 0, "Action", editor_field, "ADD_ACT")
-    timer_butt = Button(width/8, 9, 0, "Timer", editor_field, "ADD_TIME")
-    cell_butt = Button(width/4, 0, 1, "Cell editor", editor_field, "OPEN_CELL_EDITOR")
-
-    buttons = [back_butt,morph_butt,action_butt,timer_butt]
-
-
-    #Render Editor Fields
-    pygame.draw.rect(screen, (255,255,255), editor_field)
-    pygame.draw.rect(screen, (60,60,60), visual_field)
-    pygame.draw.line(screen, (0,0,0), (width/2, 0), (width/2, height), 2)
-
-    #Render Editor UI
-    screen.set_clip(editor_field)
-    back_butt.draw(screen)
-    morph_butt.draw(screen)
-    action_butt.draw(screen)
-    timer_butt.draw(screen)
-    cell_butt.draw(screen)
-
-    screen.set_clip(None)
-
-    return editor_field, visual_field, buttons
-    
-
-
-
-
-
-
-
-
-
-

@@ -1,9 +1,14 @@
 from colorama import Fore, Style
+import json
+import os
 
 def start_window():
 
     editor_text = Fore.YELLOW + "Genetic Editor\n------------------------------\n" + Style.RESET_ALL + "-am - add morphogen\n-aa - add action\n-ai - add information\n-c - compile and send genetic code\n-i - information\n-e - exit\n"
-    genetic_code = []
+    mgs = []
+    act = []
+    inf = []
+
 
     print(editor_text)
 
@@ -12,15 +17,29 @@ def start_window():
 
         if cmd == "-am":
             morphogen = add_morphogen()
-            genetic_code.append(morphogen)
+            mgs.append(morphogen)
         elif cmd == "-aa":
             action = add_action()
-            genetic_code.append(action)
-        elif cmd == "-i":
+            act.append(action)
+        elif cmd == "-ai":
             information = add_information()
-            genetic_code.append(information)
-        elif cmd == "-c":
+            inf.append(information)
+        elif cmd == "-i":
             pass
+        elif cmd == "-c":
+            genetic_code = {
+                "mgs": mgs,
+                "act": act,
+                "inf": inf,
+                "c": 1
+            }
+
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            file_path = os.path.join(current_dir, "genetic_code_raw.json")
+
+            with open(file_path, "w") as file:
+                json.dump(genetic_code, file, indent=4)
+
         elif cmd == "-e":
             break
         else:
@@ -28,25 +47,31 @@ def start_window():
 
     return 0
 
+
 def add_morphogen():
     
     name = input("Enter name: ")
     distribution = input("Enter distribution: ")
     condition = input("Enter condition: ")
-    timer = input("Enter timer: ")
     action = input("Enter action name: ")
 
-    return ["M", name, distribution, condition, timer, action]
+    return [name, distribution, condition, action]
 
 def add_action():
     name = input("Enter name: ")
     action = input("Enter action: ")
-
-    return ["A", name, action]
+    timer = input("Enter timer: ")
+    return [name, action, timer]
 
 def add_information():
     name = input("Enter name: ")
-    return ["I", name]
+    itype = input("Enter type: ")
+    if itype == "c":
+        species = input("Enter species: ")
+        return [name, itype, species]
+
+
+    return [name, itype]
     
 
 if __name__ == "__main__":

@@ -44,12 +44,11 @@ def simulation_window(screen, width, height, panel_width):
     ui_field = pygame.Rect(width - panel_width, 0, panel_width, height)
 
     #Buttons
-    spawn_butt = Button(panel_width, 0, 0, "Spawn", ui_field, "SPAWN")
-    select_butt = Button(panel_width, 0, 1, "Select", ui_field, "SELECT")
-    make_butt = Button(panel_width, 0, 2, "Make", ui_field, "MAKE")
+    menu_butt = Button(panel_width, 0, 0, "Menu", ui_field, "MENU")
+
     
 
-    buttons = [spawn_butt, select_butt, make_butt]
+    buttons = [menu_butt]
 
     #Render Fields
     pygame.draw.rect(screen, (255,255,255), world_field)
@@ -58,9 +57,7 @@ def simulation_window(screen, width, height, panel_width):
 
     #Render UI
     screen.set_clip(ui_field)
-    spawn_butt.draw(screen)
-    select_butt.draw(screen)
-    make_butt.draw(screen)
+    menu_butt.draw(screen)
 
     screen.set_clip(None)
 

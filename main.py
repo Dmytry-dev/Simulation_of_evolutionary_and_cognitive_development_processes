@@ -1,13 +1,12 @@
 #Dmytry-dev
 #30.01.2025
 
-import pygame
-import sys
-from enum import Enum
+import pygame, os, json
 from display import camera, input, render, window
 from engine.saves import save_load
 from engine.structures import Cells, Gen
 from engine.world import world 
+
 from engine.genetic_editor import genetic_editor
 
 
@@ -53,9 +52,26 @@ def main():
 
 
         #Reactions to UI actions
-        if "MAKE" in ui_inputs:
+        if "MENU" in ui_inputs:
             genetic_editor.open_editor()
+            current_dir = os.path.dirname(os.path.abspath(__file__))
 
+            json_path = os.path.join(
+                current_dir,
+                "engine",
+                "genetic_editor",
+                "genetic_code_raw.json"
+            )
+### ---------------
+            if os.path.exists(json_path):
+                with open(json_path, "r") as file:
+                    data = json.load(file)
+                    if data['c'] == 1:
+                        pass
+
+### -----------------
+
+        
 
         camera_obj.clamp(world_field.width, world_field.height)
 

@@ -1,10 +1,14 @@
+#Dmytry-dev
+#Editor chell
+#28.02.2026
+
 from colorama import Fore, Style
 import json
 import os
 
 def start_window():
 
-    editor_text = Fore.YELLOW + "Genetic Editor\n------------------------------\n" + Style.RESET_ALL + "-am - add morphogen\n-aa - add action\n-ai - add information\n-c - compile and send genetic code\n-i - information\n-e - exit\n"
+    editor_text = Fore.YELLOW + "\n======================\nGenetic Editor\n======================\n" + Style.RESET_ALL + "-am - add morphogen\n-aa - add action\n-ai - add information\n-c - compile and send genetic code\n-i - information\n-e - exit\n"
     mgs = []
     act = []
     inf = []
@@ -13,7 +17,7 @@ def start_window():
     print(editor_text)
 
     while True:
-        cmd = input("User: > ")
+        cmd = input("User(ed): > ")
 
         if cmd == "-am":
             morphogen = add_morphogen()
@@ -27,18 +31,7 @@ def start_window():
         elif cmd == "-i":
             pass
         elif cmd == "-c":
-            genetic_code = {
-                "mgs": mgs,
-                "act": act,
-                "inf": inf,
-                "c": 1
-            }
-
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            file_path = os.path.join(current_dir, "genetic_code_raw.json")
-
-            with open(file_path, "w") as file:
-                json.dump(genetic_code, file, indent=4)
+            pass
 
         elif cmd == "-e":
             break

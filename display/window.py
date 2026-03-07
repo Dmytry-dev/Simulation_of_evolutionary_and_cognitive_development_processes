@@ -1,33 +1,12 @@
 #Dmytry-dev
-#30.01.2025
+#Window Creator
+#07.03.2025
 
 import pygame
 import sys
-##import pygame_gui
-
-class Button:
-    def __init__(self, width, x, y, text, field, callback):
-        self.rect = pygame.Rect(field.x + 10 + 50*x, field.y + 10 + 50*y, width-20, 40)
-        self.text = text
-        self.font = pygame.font.SysFont(None, 36)
-        self.color = (200,200,200)
-        self.callback = callback
-
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
-
-        text_surf = self.font.render(self.text, True, (0,0,0))
-        text_rect = text_surf.get_rect(center=self.rect.center)
-        screen.blit(text_surf, text_rect)
-
-    def handle_event(self, event, ui_field):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if ui_field.collidepoint(event.pos):
-                if self.rect.collidepoint(event.pos):
-                    return self.callback
 
     
-def create_window(width, height, panel_width):
+def create_window(width, height):
     pygame.init()
 
     #Window initialization
@@ -37,28 +16,17 @@ def create_window(width, height, panel_width):
     return screen
 
 
-
-def simulation_window(screen, width, height, panel_width):
+def simulation_window(screen, width, height, debug_panel, information_panel):
     #Fields
-    world_field = pygame.Rect(0, 0, width - panel_width, height)
-    ui_field = pygame.Rect(width - panel_width, 0, panel_width, height)
-
-    #Buttons
-    menu_butt = Button(panel_width, 0, 0, "Menu", ui_field, "MENU")
-
-    
-
-    buttons = [menu_butt]
+    world_field = pygame.Rect(0, 0, width - debug_panel, height - information_panel)
+    debug_field = pygame.Rect(width - debug_panel, 0, debug_panel, height - information_panel)
+    information_field = pygame.Rect(0, height - information_panel, width, information_panel)
 
     #Render Fields
     pygame.draw.rect(screen, (255,255,255), world_field)
-    pygame.draw.rect(screen, (60, 60, 60), ui_field)
-    pygame.draw.line(screen, (0,0,0), (width-panel_width,0), (width-panel_width, height), 2)
+    pygame.draw.rect(screen, (60, 60, 60), debug_field)
+    pygame.draw.rect(screen, (30,30,30), information_field)
+    #pygame.draw.line(screen, (0,0,0), (width-debug_panel,0), (width-debug_panel, height - information_panel), 3)
+    #pygame.draw.line(screen, (0,0,0), (50,height-information_panel), (width, height - information_panel), 3)
 
-    #Render UI
-    screen.set_clip(ui_field)
-    menu_butt.draw(screen)
-
-    screen.set_clip(None)
-
-    return world_field, ui_field, buttons
+    return world_field, debug_field, information_field

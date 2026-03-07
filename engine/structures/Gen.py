@@ -1,22 +1,21 @@
 #Dmytry-dev
-#27.02.2026
+#05.03.2026
 
 class Morphogenes:
-    def __init__(self, Name, Distribution, Condition, Timer, Action_name):
+    def __init__(self, Name, Distribution, Condition, Action_name):
         self.M_name = Name
         self.D = Distribution
         self.C = Condition
-        self.T = Timer
 
         self.A_name = Action_name
         self.A_obj = None
-
-        self.Morphogen_structure = {"Morphogen": self.M_name, "Distribution": self.D, "Timer": self.T,"Condition": self.C, "Action name": self.A_name, "Action object": self.A_obj}
-
+        
 class Actions:
-    def __init__(self, Name, Action):
+    def __init__(self, Name, Action, Timer):
         self.A_name = Name
         self.A = Action
+        self.T = Timer
+
 
 
 class Information:

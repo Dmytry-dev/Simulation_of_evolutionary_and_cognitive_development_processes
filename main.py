@@ -1,26 +1,60 @@
 #Dmytry-dev
-#30.01.2025
+#07.03.2025
 
-import pygame, os, json
-from display import camera, input, render, window
+import pygame, os, json, colorama
+from colorama import Fore, Style
+from multiprocessing import Process, Pipe
+
+from display import camera, inputs, render, window
+
 from engine.saves import save_load
 from engine.structures import Cells, Gen
 from engine.world import world 
-
-from engine.genetic_editor import genetic_editor
+from engine.genetic_editor import editor_shell
 
 
 def main():
+    
+    menu_text = Fore.YELLOW + "======================\nMENU\n======================\n" + Style.RESET_ALL
+
+    main_conn, simulation_conn = Pipe()
+
+    simulation_process = False
+
+    print(menu_text)
+
+    while True:
+        cmd = input("User: > ")
+        
+        if cmd == "-e":
+            break
+        elif cmd == "-s":
+            p = Process(target=simulation)
+            simulation_process = True
+            p.start()
+        elif cmd == "-ed":
+            editor_shell.start_window()
+
+        else:
+            print(f"Unknown command: {cmd}")
+    if simulation_process == True:
+        p.join()
+
+    return 0
+
+
+def simulation():
     width = 1200
-    height = 800
-    panel_width = 300
+    height = 1000
+    debug_panel = 300
+    information_panel = 200
     world_width = 10000
     world_height = 10000
     speed = 500
 
-    screen = window.create_window(width, height, panel_width)
-    world_field, ui_field, buttons = window.simulation_window(screen, width, height, panel_width)
-    focus_field = ui_field
+
+    screen = window.create_window(width, height)
+    world_field, debug_field, information_panel = window.simulation_window(screen, width, height, debug_panel, information_panel)
 
     camera_obj = camera.Camera(world_width, world_height)
     camera_obj.x = world_width // 2 - world_field.width // 2
@@ -33,8 +67,7 @@ def main():
         dt = clock.tick(60)
         events = pygame.event.get()
 
-        world_input = input.world_inputs(events, world_field)
-        ui_inputs = input.ui_inputs(events, focus_field, buttons)
+        world_input = inputs.world_inputs(events, world_field)
 
         move_speed = speed * dt / 1000
 
@@ -49,28 +82,6 @@ def main():
             camera_obj.move(-move_speed, 0)
         if "CAMERA_RIGHT" in world_input["actions"]:
             camera_obj.move(move_speed, 0)
-
-
-        #Reactions to UI actions
-        if "MENU" in ui_inputs:
-            genetic_editor.open_editor()
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-
-            json_path = os.path.join(
-                current_dir,
-                "engine",
-                "genetic_editor",
-                "genetic_code_raw.json"
-            )
-### ---------------
-            if os.path.exists(json_path):
-                with open(json_path, "r") as file:
-                    data = json.load(file)
-                    if data['c'] == 1:
-                        pass
-
-### -----------------
-
         
 
         camera_obj.clamp(world_field.width, world_field.height)

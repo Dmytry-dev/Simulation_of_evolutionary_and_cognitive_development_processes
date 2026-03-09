@@ -3,7 +3,6 @@
 #07.03.2025
 
 import pygame
-import sys
 
     
 def create_window(width, height):

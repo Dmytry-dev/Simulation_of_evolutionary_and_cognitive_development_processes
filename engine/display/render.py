@@ -3,7 +3,6 @@
 #28.02.2026
 
 import pygame
-import sys
 
 def camera_view_rect(camera, world_field):
     camera_view = pygame.Rect(
@@ -22,7 +21,6 @@ def circle_rect(circle_wx, circle_wy, radius):
         radius * 2
     )
     return circle_world_rect
-
 
 def center_and_borders(screen, world_field, camera):
     screen.set_clip(world_field)

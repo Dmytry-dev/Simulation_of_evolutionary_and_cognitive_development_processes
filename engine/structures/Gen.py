@@ -1,14 +1,13 @@
 #Dmytry-dev
-#05.03.2026
+#08.03.2026
 
 class Morphogenes:
-    def __init__(self, Name, Distribution, Condition, Action_name):
+    def __init__(self, Name, Distribution, Condition, Action):
         self.M_name = Name
         self.D = Distribution
         self.C = Condition
 
-        self.A_name = Action_name
-        self.A_obj = None
+        self.A = Action
         
 class Actions:
     def __init__(self, Name, Action, Timer):

@@ -3,8 +3,6 @@
 #27.02.2026
 #V 0.1
 
-import pygame 
-
 class Camera:
     def __init__(self, world_width, world_height):
         self.x = 0

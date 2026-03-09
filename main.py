@@ -1,101 +1,108 @@
 #Dmytry-dev
-#07.03.2025
+#08.03.2025
 
-import pygame, os, json, colorama
 from colorama import Fore, Style
-from multiprocessing import Process, Pipe
+from multiprocessing import Process
+from multiprocessing.connection import Listener
+import subprocess, sys, select, time
 
-from display import camera, inputs, render, window
 
-from engine.saves import save_load
-from engine.structures import Cells, Gen
-from engine.world import world 
-from engine.genetic_editor import editor_shell
+from engine.genetic_editor.editor_shell import open_editor
+from engine.simulation import simulation_start
 
 
 def main():
-    
     menu_text = Fore.YELLOW + "======================\nMENU\n======================\n" + Style.RESET_ALL
 
-    main_conn, simulation_conn = Pipe()
+    listener_editor = Listener(("localhost", 6000))
+    listener_simulation = Listener(("localhost", 6001))
 
-    simulation_process = False
+    conn_editor = None
+    conn_simulation = None
+
+    open_simulation = False
+    open_editor = False
+    
 
     print(menu_text)
+    print("User: >", end=" ", flush=True)
+
 
     while True:
-        cmd = input("User: > ")
-        
-        if cmd == "-e":
-            break
-        elif cmd == "-s":
-            p = Process(target=simulation)
-            simulation_process = True
-            p.start()
-        elif cmd == "-ed":
-            editor_shell.start_window()
 
-        else:
-            print(f"Unknown command: {cmd}")
-    if simulation_process == True:
-        p.join()
+        #Mesages
+        if conn_editor and conn_editor.poll():
+            try:
+                msg = conn_editor.recv()
+                if msg == 1:
+                    print("[EDITOR] connected\n")
+                    conn_editor.send(1)
+
+            except EOFError:
+                print("\n[EDITOR] disconnected\n")
+                conn_editor.close()
+                conn_editor = None
+            print("User: >", end=" ", flush=True)
+
+
+        # Input
+        if select.select([sys.stdin], [], [], 0)[0]:
+            cmd = sys.stdin.readline().strip().split()
+
+            if not cmd:
+                print("User: >", end=" ", flush=True)
+                continue
+                
+            # Main
+            if cmd[0] == "pr":
+                if cmd[1] == "-e":
+                    break
+
+            # Simulation
+            elif cmd[0] == "sim":
+                # Open simulation
+                if cmd[1] == "-s":
+
+                    sim_p = Process(target=simulation_start)
+                    sim_p.start()
+                    conn_simulation = listener_simulation.accept()
+                    open_simulation = True
+
+                # Close simulation
+                elif cmd[1] == "-e":
+                    conn_simulation.send("-e")
+                    sim_p.join()
+            
+            # Manual
+            elif cmd[0] == "-i":
+                print("Information")
+
+            # Editor
+            elif cmd[0] == "ed":
+                # Open Editor
+                if cmd[1] == "-s":
+                    subprocess.Popen([
+                        "xterm",
+                        "-e",
+                        "bash",
+                        "-c",
+                        "python3 engine/genetic_editor/editor_shell.py"
+                    ])
+                    conn_editor = listener_editor.accept()
+
+                elif cmd[1] == "-e":
+                    conn_editor.send("-e")
+            print("User: >", end=" ", flush=True)
+        
+        time.sleep(0.1)
+
+
+
+    if open_simulation == True:
+        conn_simulation.send("-e")
+        sim_p.join()
 
     return 0
-
-
-def simulation():
-    width = 1200
-    height = 1000
-    debug_panel = 300
-    information_panel = 200
-    world_width = 10000
-    world_height = 10000
-    speed = 500
-
-
-    screen = window.create_window(width, height)
-    world_field, debug_field, information_panel = window.simulation_window(screen, width, height, debug_panel, information_panel)
-
-    camera_obj = camera.Camera(world_width, world_height)
-    camera_obj.x = world_width // 2 - world_field.width // 2
-    camera_obj.y = world_height // 2 - world_field.height // 2
-    
-    clock = pygame.time.Clock()
-
-    running = True
-    while(running):
-        dt = clock.tick(60)
-        events = pygame.event.get()
-
-        world_input = inputs.world_inputs(events, world_field)
-
-        move_speed = speed * dt / 1000
-
-        #Reaction to world actions
-        if world_input["quit"]:
-            running = False
-        if "CAMERA_UP" in world_input["actions"]:
-            camera_obj.move(0, -move_speed)
-        if "CAMERA_DOWN" in world_input["actions"]:
-            camera_obj.move(0, move_speed)
-        if "CAMERA_LEFT" in world_input["actions"]:
-            camera_obj.move(-move_speed, 0)
-        if "CAMERA_RIGHT" in world_input["actions"]:
-            camera_obj.move(move_speed, 0)
-        
-
-        camera_obj.clamp(world_field.width, world_field.height)
-
-        #Clearing the world field before a new frame
-        screen.set_clip(world_field)
-        screen.fill((255, 255, 255)) 
-        screen.set_clip(None)
-
-        #Rendering objects
-        render.center_and_borders(screen, world_field, camera_obj)
-
-        pygame.display.flip()
-
 
     
 if __name__ == "__main__":

@@ -9,6 +9,8 @@ import subprocess, sys, select, time
 
 from engine.genetic_editor.editor_shell import open_editor
 from engine.simulation import simulation_start
+from engine.structures.Gen import DNA 
+from engine.structures import genetic_compiler
 
 
 def main():
@@ -22,10 +24,10 @@ def main():
 
     open_simulation = False
     open_editor = False
+
     
 
     print(menu_text)
-    print("User: >", end=" ", flush=True)
 
 
     while True:
@@ -34,15 +36,14 @@ def main():
         if conn_editor and conn_editor.poll():
             try:
                 msg = conn_editor.recv()
-                if msg == 1:
-                    print("[EDITOR] connected\n")
-                    conn_editor.send(1)
-
+                if msg["flag"] == "-c":
+                    genetic_code = genetic_compiler.compilation(msg["mgs"], msg["act"], msg["inf"])
+                    conn_editor.send(genetic_code)
+                    
             except EOFError:
                 print("\n[EDITOR] disconnected\n")
                 conn_editor.close()
                 conn_editor = None
-            print("User: >", end=" ", flush=True)
 
 
         # Input
@@ -50,7 +51,6 @@ def main():
             cmd = sys.stdin.readline().strip().split()
 
             if not cmd:
-                print("User: >", end=" ", flush=True)
                 continue
                 
             # Main
@@ -86,13 +86,14 @@ def main():
                         "-e",
                         "bash",
                         "-c",
-                        "python3 engine/genetic_editor/editor_shell.py"
+                        "python3 -m engine.genetic_editor.editor_shell; echo; echo 'PRESS ENTER'; read"
                     ])
                     conn_editor = listener_editor.accept()
+                    open_editor = True
 
                 elif cmd[1] == "-e":
                     conn_editor.send("-e")
-            print("User: >", end=" ", flush=True)
+                    open_editor = False
         
         time.sleep(0.1)
 
@@ -101,6 +102,8 @@ def main():
     if open_simulation == True:
         conn_simulation.send("-e")
         sim_p.join()
+    if open_editor == True:
+        conn_editor.send("-e")
 
     return 0
 

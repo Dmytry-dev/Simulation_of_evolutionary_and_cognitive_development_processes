@@ -17,18 +17,15 @@ class Actions:
 
 
 
-class Information:
+class Informations:
     def __init__(self, Name):
         self.N = Name
 
-class Genes:
-    def __init__(self, Morphogens, Actions, Timers, Information):
+class DNA:
+    def __init__(self, Morphogens, Actions, Information):
         self.Mg = Morphogens
         self.Ac = Actions
-        self.Tm = Timers
         self.Inf = Information
-
-        self.DNA = [self.Mg, self.Ac, self.Tm, self.Inf]
 
         self.DNA_linker()
 
@@ -37,6 +34,6 @@ class Genes:
             Morphogen = self.Mg[i]
             for t in range(len(self.Ac)):
                 Action = self.Ac[t]
-                if Morphogen.A_name == Action.A_name:
-                    Morphogen.A_obj = Action
+                if Morphogen.A == Action.A_name:
+                    Morphogen.A = Action
                     break

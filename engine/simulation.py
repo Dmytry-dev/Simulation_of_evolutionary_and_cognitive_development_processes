@@ -37,7 +37,7 @@ def simulation_start():
         #Listening main process
         if conn_sim.poll():
             msg = conn_sim.recv()
-            if msg == "-e":
+            if msg == "e":
                 break
 
         #Reaction to world actions
